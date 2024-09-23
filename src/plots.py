@@ -5,7 +5,7 @@ from tqdm import tqdm
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from risk_credit.config import FIGURES_DIR, PROCESSED_DATA_DIR
+from src.config import FIGURES_DIR, PROCESSED_DATA_DIR
 
 app = typer.Typer()
 

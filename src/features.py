@@ -4,11 +4,15 @@ import typer
 from loguru import logger
 from tqdm import tqdm
 
-from risk_credit.config import PROCESSED_DATA_DIR
+from src.config import PROCESSED_DATA_DIR
+import sys
+from pathlib import Path
 
+# Adicione o diretório raiz do projeto ao sys.path
+print(sys.path.append(str(Path(__file__).resolve().parents[1])))
 app = typer.Typer()
 
-
+print(sys)
 @app.command()
 def main(
     # ---- REPLACE DEFAULT PATHS AS APPROPRIATE ----
