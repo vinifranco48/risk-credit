@@ -1,13 +1,6 @@
-from pathlib import Path
-import typer
-from loguru import logger
-from tqdm import tqdm
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from src.config import FIGURES_DIR, PROCESSED_DATA_DIR
-
-app = typer.Typer()
 
 def analisy_univariate(data, features, histoplot=True, barplot=False, mean=None, text_y=0.5, outliers=False, kde=False, color=None, figsize=(24, 12)):
     num_features = len(features)
@@ -57,24 +50,3 @@ def analisy_univariate(data, features, histoplot=True, barplot=False, mean=None,
 
     plt.tight_layout()
     return fig
-
-@app.command()
-def main(
-    input_path: Path = PROCESSED_DATA_DIR / "dataset.csv",
-    output_path: Path = FIGURES_DIR / "univariate_analysis_plot.png",
-):
-    logger.info("Loading data...")
-    data = pd.read_csv(input_path)
-    
-    logger.info("Generating univariate analysis plot...")
-    features = data.columns.tolist()  # You might want to select specific features
-    
-    fig = analisy_univariate(data, features, histoplot=True, kde=True)
-    
-    logger.info(f"Saving plot to {output_path}...")
-    fig.savefig(output_path)
-    
-    logger.success("Plot generation complete.")
-
-if __name__ == "__main__":
-    app()
