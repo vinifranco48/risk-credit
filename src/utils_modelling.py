@@ -64,7 +64,6 @@ def analisy_univariate(data, features, histoplot=True, barplot=False, mean=None,
     plt.tight_layout()
     return fig
 
-<<<<<<< HEAD
 
 def wo_discretize(df, var_discretize, target):
     # Concatenar as colunas relevantes
@@ -113,7 +112,7 @@ def plot_woe(df_woe, rotation_axis=0):
         plt.ylabel('Peso das evidencias')
         plt.title(str('Peso das evidencas' + df_woe.columns[0]))
         plt.xticks(rotation = rotation_axis)
-=======
+
 def plot_horizontal_bars(df, x_col, y_col, title=None, xlabel=None, ylabel=None, 
                          color='lightcoral', figsize=(10, 6), sort=True, 
                          annotations=True, percentage=False):
@@ -177,4 +176,37 @@ def plot_horizontal_bars(df, x_col, y_col, title=None, xlabel=None, ylabel=None,
     plt.tight_layout()
     
     return fig
->>>>>>> 4fce21c91438ed320b6212400c12e7c6ecc47563
+
+def wo_discretize_continuos(df, var_discretize, target):
+    # Concatenar as colunas relevantes
+    df = pd.concat([df[var_discretize], target], axis=1)
+    
+    # Agrupar e calcular contagem e média
+    df_count = df.groupby(df.columns[0], as_index=False)[df.columns[1]].count()
+    df_mean = df.groupby(df.columns[0], as_index=False)[df.columns[1]].mean()
+    
+    # Concatenar os resultados
+    df = pd.concat([df_count, df_mean[df_mean.columns[1]]], axis=1)
+    
+    # Renomear as colunas
+    df.columns = [df.columns[0], 'n_obs', 'prop_good']
+    
+    # Calcular proporções e números
+    df['prop_n_obs'] = df['n_obs'] / df['n_obs'].sum()
+    df['n_good'] = df['prop_good'] * df['n_obs']
+    df['n_bad'] = (1 - df['prop_good']) * df['n_obs']
+    df['prop_n_good'] = df['n_good'] / df['n_good'].sum()
+    df['prop_n_bad'] = df['n_bad'] / df['n_bad'].sum()
+    
+    # Calcular WoE (Weight of Evidence)
+    df['woe'] = np.log(df['prop_n_good'] / df['prop_n_bad'])
+
+    # Calcular diferenças
+    df['diff_prop_good'] = df['prop_good'].diff().abs()
+    df['diff_woe'] = df['woe'].diff().abs()
+    
+    # Calcular IV (Information Value)
+    df['iv'] = (df['prop_n_good'] - df['prop_n_bad']) * df['woe']
+    df['total_iv'] = df['iv'].sum()
+    
+    return df
